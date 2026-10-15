@@ -2,7 +2,7 @@
 
 A lightweight, dark-themed music player for listening to audio from **public MEGA folders** and working with **M3U/M3U8 playlists**.
 
-**Website:** [Open Orbit Music Player]([YOUR_WEBSITE_URL_HERE](https://aswins404.github.io/music_player/))
+**Website:** [Open Orbit Music Player](https://aswins404.github.io/music_player/)
 
 Orbit runs in your browser and does not require you to sign in to a MEGA account. You provide a public folder link, and the player reads its contents using the MEGAJS browser client.
 
