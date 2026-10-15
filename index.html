@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c0e12">
+  <meta name="description" content="A lightweight music player for public MEGA folders and M3U playlists.">
+  <title>Orbit — Music Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20261016-2">
+  <script defer src="script.js?v=20261016-2"></script>
+  <script>
+    window.addEventListener('load', () => {
+      if (window.orbitInitialized) return;
+      const form = document.getElementById('mega-form');
+      const status = document.getElementById('status-message');
+      const showStartupError = (event) => {
+        event.preventDefault();
+        status.className = 'connection-status error';
+        status.lastElementChild.textContent = 'The player script did not start. Reopen this page, or use localhost/GitHub Pages if the problem continues.';
+      };
+      form?.addEventListener('submit', showStartupError);
+      if (status) {
+        status.className = 'connection-status error';
+        status.lastElementChild.textContent = 'The player script did not start. Reopen this page, or use localhost/GitHub Pages if the problem continues.';
+      }
+    });
+  </script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="Orbit home"><span class="brand-mark" aria-hidden="true">◉</span><span>orbit<span class="brand-period">.</span></span></a>
+      <div class="topbar-right"><span class="connection-dot" id="connection-dot"></span><span id="connection-label">Not connected</span><button class="icon-button" id="theme-note" type="button" aria-label="Keyboard shortcuts" title="Space: play or pause · J/K: previous or next">⌘</button></div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div><p class="eyebrow"><span class="eyebrow-line"></span> YOUR PERSONAL LISTENING ROOM</p><h1>Music, in<br><span>your orbit.</span></h1><p class="hero-copy">Bring your MEGA library into one quiet, focused place. Your music stays yours.</p></div>
+        <div class="hero-orbit" aria-hidden="true"><div class="orbit-ring ring-one"></div><div class="orbit-ring ring-two"></div><div class="orbit-core">♫</div><span class="orbit-star star-a">✳</span><span class="orbit-star star-b">✦</span></div>
+      </section>
+
+      <section class="connection-card panel" aria-labelledby="connect-heading">
+        <div class="section-heading"><div class="section-icon">↗</div><div><p class="eyebrow">START LISTENING</p><h2 id="connect-heading">Connect your MEGA folder</h2></div><span class="step-tag">01 / SOURCE</span></div>
+        <form id="mega-form" class="mega-form">
+          <label class="visually-hidden" for="mega-url">Public MEGA folder URL</label><input id="mega-url" name="mega-url" type="url" spellcheck="false" autocomplete="url" value="https://mega.nz/folder/YL9WADpL#7e4H_6oD_CQKNzfPBvNRSw" placeholder="https://mega.nz/folder/…#…" required>
+          <button id="load-folder" class="primary-button" type="submit"><span class="button-text">Load folder</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+        </form>
+        <div class="connection-status" id="status-message" role="status" aria-live="polite"><span class="status-indicator"></span><span>Preparing secure MEGA connection…</span></div>
+        <div class="load-progress" id="folder-progress" hidden><div class="progress-track"><span id="folder-progress-bar"></span></div><span id="folder-progress-label">Loading folder…</span></div>
+        <details class="privacy-note"><summary><span aria-hidden="true">⌁</span> How this connection works</summary><p>This page uses the open-source MEGAJS browser client to read the public share link you provide. Your link’s decryption key stays in this browser session; no account sign-in is used. Tracks are downloaded and decrypted locally before playback.</p></details>
+      </section>
+
+      <div class="content-grid">
+        <nav class="mobile-nav" aria-label="Player sections"><a href="#queue-card">Queue</a><a href="#collection-panel">Collection</a></nav>
+        <section class="library-panel panel" id="collection-panel" aria-labelledby="library-heading">
+          <div class="library-heading"><div><p class="eyebrow">YOUR LIBRARY</p><h2 id="library-heading">The collection</h2></div><span class="track-count" id="track-count">0 tracks</span></div>
+          <section class="playlist-import" aria-label="Import playlists">
+            <details><summary>Import MEGA playlist</summary><div class="mega-playlist-form"><label class="visually-hidden" for="playlist-mega-url">MEGA playlist folder URL</label><input id="playlist-mega-url" type="url" value="https://mega.nz/folder/0XVXzJTR#FiT9lyC4jHbHYao4v5wVtw" placeholder="Paste a public MEGA folder link"><button id="preview-mega-playlist" class="text-button" type="button">Find playlists</button></div><div id="mega-playlist-preview" class="import-feedback" aria-live="polite">Suggested folder is ready to scan. Nothing is imported until you choose a playlist.</div><div id="mega-playlist-choices" class="playlist-choices"></div><div id="imported-mega-playlists" class="imported-playlists"></div><details class="edit-note"><summary>MEGA playlist editing information</summary><p>Reordering or removing entries affects this player session only. It never changes the MEGA folder. Use “Save Playlist to Device” to keep an edited copy; saving downloads a local playlist file.</p></details></details>
+            <div class="playlist-import-actions"><label class="upload-button" for="m3u-file"><span aria-hidden="true">＋</span> Add M3U/M3U8</label><input id="m3u-file" type="file" accept=".m3u,.m3u8,audio/x-mpegurl,audio/mpegurl" hidden><input id="local-audio-files" type="file" accept="audio/*" multiple webkitdirectory directory hidden><label class="upload-button" for="local-audio-files">Match local audio</label><button id="edit-playlist" class="text-button" type="button" hidden>Edit Playlist</button><button id="save-playlist" class="text-button" type="button" hidden>Save Playlist to Device</button><button id="clear-playlist" class="text-button" type="button" hidden>Remove</button></div>
+          </section>
+          <div class="library-tools"><div class="tabs" id="collection-tabs" role="tablist" aria-label="Song collections"><button class="tab active" id="tab-all" type="button" role="tab" aria-selected="true" aria-controls="song-list" data-view="all">All MEGA Songs <span id="all-badge" class="tab-count">0</span></button><span id="imported-playlist-tabs" class="tabs imported-tabs"></span></div></div>
+          <label class="search-box"><span aria-hidden="true">⌕</span><span class="visually-hidden">Search songs</span><input id="search-input" type="search" placeholder="Search your music…" autocomplete="off"><kbd>/</kbd></label>
+          <div id="playlist-summary" class="playlist-summary" hidden></div>
+          <div class="song-table-wrap"><div class="song-table-head"><span>#</span><span>TRACK</span><span class="duration-col">LENGTH</span><span></span></div><div id="song-list" role="tabpanel" aria-labelledby="tab-all" class="song-list"><div class="empty-state"><span class="empty-icon">♫</span><strong>Your collection is waiting</strong><span>Load a MEGA folder to discover your music.</span></div></div></div>
+          <div id="unmatched-panel" class="unmatched-panel" hidden></div>
+          <div class="library-footer"><span><span class="live-dot"></span> <span id="library-footer-text">Waiting for a folder</span></span><span id="library-updated"></span></div>
+        </section>
+
+        <aside class="now-playing-column">
+          <section class="player-card panel" aria-labelledby="player-heading">
+            <div class="player-card-top"><div><p class="eyebrow">NOW PLAYING</p><h2 id="player-heading">Your listening space</h2></div><span class="step-tag">02 / PLAYER</span></div>
+            <div class="album-art" id="album-art"><img id="cover-art" alt="" hidden><div class="art-grid"></div><div class="art-sun"></div><div class="art-orbit orbit-a"></div><div class="art-orbit orbit-b"></div><span class="art-note">♫</span><span class="art-caption">ORBIT SESSIONS · VOL. 01</span></div>
+            <div class="track-info"><div class="track-info-text"><div id="now-title" class="now-title">Nothing playing yet</div><div id="now-folder" class="now-folder">Choose a track to begin</div></div><span class="playing-bars" id="playing-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
+            <div class="timeline"><span id="current-time">0:00</span><label class="visually-hidden" for="seek">Seek</label><input id="seek" type="range" min="0" max="1000" value="0" aria-label="Seek through track" disabled><span id="total-time">0:00</span></div>
+            <div id="player-message" class="player-message" role="status" aria-live="polite">Ready when you are</div>
+            <div class="main-controls"><button id="shuffle-button" class="control-button secondary-control" type="button" aria-label="Shuffle" aria-pressed="false" title="Shuffle; press again to reshuffle">⤨</button><button id="shuffle-off-button" class="shuffle-off-button" type="button" aria-label="Turn shuffle off" title="Turn shuffle off" hidden>Off</button><button id="previous-button" class="control-button" type="button" aria-label="Previous track" title="Previous track" disabled><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 5h2v14H6zM19 5v14L9 12z"/></svg></button><button id="play-button" class="play-button" type="button" aria-label="Play" title="Play" disabled>▶</button><button id="next-button" class="control-button" type="button" aria-label="Next track" title="Next track" disabled><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM5 5v14l10-7z"/></svg></button><button id="repeat-button" class="control-button secondary-control" type="button" aria-label="Repeat current track" aria-pressed="false" title="Repeat current track">↻</button><button id="download-track" class="control-button secondary-control" type="button" aria-label="Download current track" title="Download current track" disabled>⇩</button></div>
+            <div class="volume-row"><button id="mute-button" class="mute-button" type="button" aria-label="Mute" title="Mute">◖</button><label class="visually-hidden" for="volume">Volume</label><input id="volume" type="range" min="0" max="1" step="0.01" value="0.75"><span id="volume-label">75%</span></div>
+            <audio id="audio" preload="metadata"></audio>
+          </section>
+          <section class="queue-card panel" id="queue-card"><div class="queue-top"><div><p class="eyebrow">UP NEXT</p><h3>In your queue</h3></div><button id="queue-play-all" class="text-button" type="button" disabled>Play all ↗</button></div><div id="queue-preview" class="queue-preview"><div class="queue-empty"><span>♫</span>Tracks you play will find their place here.</div></div></section>
+          <p class="player-footnote">A little room for the music. <span>✳</span></p>
+        </aside>
+      </div>
+    </main>
+    <footer class="site-footer"><a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true">◉</span><span>orbit<span class="brand-period">.</span></span></a><span>Made for the music you already love.</span><a href="README.md">About this player ↗</a></footer>
+  </div>
+</body>
+</html>
